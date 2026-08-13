@@ -1,0 +1,24 @@
+{
+  "name": "@omdsh/omdsh",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Public-release staging source for the Oh My DSH community project.",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "validate": "node scripts/validate-distributions.mjs",
+    "validate:release": "node scripts/validate-distributions.mjs --require-manifest --verify-evidence",
+    "i18n:check": "node --test test/i18n.test.mjs",
+    "public:check": "node scripts/run-checks.mjs public",
+    "visibility:check": "node scripts/run-checks.mjs visibility",
+    "release:check": "node scripts/run-checks.mjs release"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  }
+}
