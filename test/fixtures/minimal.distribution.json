@@ -1,0 +1,28 @@
+{
+  "$schema": "../../schemas/distribution-v1.schema.json",
+  "schemaVersion": 1,
+  "id": "example-component-set",
+  "version": "0.1.0-preview.0",
+  "channel": "preview",
+  "name": {
+    "en": "Example Component Set",
+    "zh-CN": "组件组合示例"
+  },
+  "summary": {
+    "en": "A fictional component set used only by local tests.",
+    "zh-CN": "一个只用于本地测试的虚构组件组合。"
+  },
+  "maintainers": [
+    {
+      "name": "Example Maintainer",
+      "url": "https://example.invalid/maintainer"
+    }
+  ],
+  "components": [
+    {
+      "id": "example-extension",
+      "version": "0.1.0"
+    }
+  ]
+}
+
