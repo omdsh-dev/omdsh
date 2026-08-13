@@ -60,6 +60,7 @@
   "validation.errors.publicPackageMismatch": "npm metadata did not match {coordinate}",
   "validation.errors.publicIntegrityMismatch": "npm integrity did not match the approved value for {coordinate}",
   "validation.errors.publicEvidenceGitHead": "npm gitHead did not match the approved source commit for {coordinate}",
+  "validation.errors.workshopProjectionLock": "the distribution component projection must match its pinned DSH Hub Workshop snapshot lock",
   "validation.errors.manifestRequired": "release validation requires at least one production definition",
   "validation.success": "Validated {count} production definitions.",
   "schema.errors.required": "{location} is missing required property {property}",

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto'
 import { readdir, readFile } from 'node:fs/promises'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -97,6 +98,32 @@ export function parsePublicComponents(entries, schema, t) {
     expectedError(t('validation.errors.publicIdsUnique'))
   }
   return coordinates
+}
+
+export function validateWorkshopProjectionLock(lock, projectionText, t) {
+  const digest = `sha256:${createHash('sha256').update(projectionText).digest('hex')}`
+  const valid = lock &&
+    typeof lock === 'object' &&
+    !Array.isArray(lock) &&
+    JSON.stringify(Object.keys(lock).sort()) === JSON.stringify([
+      'authority',
+      'producer',
+      'projection',
+      'registry',
+      'schema',
+    ]) &&
+    lock.schema === 'omdsh-workshop-distribution-projection-lock/v1' &&
+    lock.authority === 'read-only-derived-snapshot' &&
+    lock.producer?.product === 'DSH Hub Workshop' &&
+    lock.producer?.repository === 'https://github.com/omdsh-dev/dsh-hub-workshop' &&
+    lock.registry?.schema === 'omdsh-registry/v1' &&
+    Number.isSafeInteger(lock.registry?.revision) &&
+    /^sha256:[0-9a-f]{64}$/.test(lock.registry?.snapshotId ?? '') &&
+    /^sha256:[0-9a-f]{64}$/.test(lock.registry?.digest ?? '') &&
+    lock.projection?.path === 'policy/public-components.json' &&
+    lock.projection?.digest === digest
+
+  if (!valid) expectedError(t('validation.errors.workshopProjectionLock'))
 }
 
 function githubRepository(value) {
@@ -200,11 +227,18 @@ async function validateDistributions({ t, requireManifest, verifyEvidence }) {
   const schema = await readJson(schemaPath, t, 'schemas/distribution-v1.schema.json')
   const validate = createValidator(schema)
   const policyPath = resolve(repositoryRoot, 'policy/public-components.json')
+  const policyText = await readFile(policyPath, 'utf8')
   const publicComponentEntries = await readJson(
     policyPath,
     t,
     'policy/public-components.json',
   )
+  const workshopLock = await readJson(
+    resolve(repositoryRoot, 'policy/workshop-projection-lock.json'),
+    t,
+    'policy/workshop-projection-lock.json',
+  )
+  validateWorkshopProjectionLock(workshopLock, policyText, t)
   const publicComponents = parsePublicComponents(publicComponentEntries, schema, t)
 
   if (verifyEvidence) await verifyPublicEvidence(publicComponentEntries, t)

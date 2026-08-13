@@ -1,0 +1,18 @@
+{
+  "schema": "omdsh-workshop-distribution-projection-lock/v1",
+  "authority": "read-only-derived-snapshot",
+  "producer": {
+    "product": "DSH Hub Workshop",
+    "repository": "https://github.com/omdsh-dev/dsh-hub-workshop"
+  },
+  "registry": {
+    "schema": "omdsh-registry/v1",
+    "snapshotId": "sha256:fcb3dc2ffa3462d3f57abebb16e7fe60fef9bd180cf38be9121b967c105290cf",
+    "revision": 1786260000000,
+    "digest": "sha256:fe6812a91e19a3623b5a6947d5130a6d47128ec7d6d597ba6e068b54be8151e5"
+  },
+  "projection": {
+    "path": "policy/public-components.json",
+    "digest": "sha256:5239a7754876b9a70871c45e41f1bd9abbd91ed2de67af926c1cfcc9c9377d51"
+  }
+}

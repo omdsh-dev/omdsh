@@ -8,6 +8,7 @@ import {
 } from '../scripts/lib/distribution.mjs'
 import {
   parsePublicComponents,
+  validateWorkshopProjectionLock,
   verifyPublicEvidence,
 } from '../scripts/validate-distributions.mjs'
 
@@ -17,6 +18,33 @@ const schema = JSON.parse(
 const distribution = JSON.parse(
   await readFile(new URL('./fixtures/minimal.distribution.json', import.meta.url)),
 )
+
+test('Workshop projection lock pins the sole catalog source and exact projection', () => {
+  const projectionText = '[]\n'
+  const lock = {
+    schema: 'omdsh-workshop-distribution-projection-lock/v1',
+    authority: 'read-only-derived-snapshot',
+    producer: {
+      product: 'DSH Hub Workshop',
+      repository: 'https://github.com/omdsh-dev/dsh-hub-workshop',
+    },
+    registry: {
+      schema: 'omdsh-registry/v1',
+      snapshotId: `sha256:${'a'.repeat(64)}`,
+      revision: 1,
+      digest: `sha256:${'b'.repeat(64)}`,
+    },
+    projection: {
+      path: 'policy/public-components.json',
+      digest: 'sha256:37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570',
+    },
+  }
+  assert.doesNotThrow(() => validateWorkshopProjectionLock(lock, projectionText, (key) => key))
+  assert.throws(
+    () => validateWorkshopProjectionLock(lock, '[{}]\n', (key) => key),
+    /validation\.errors\.workshopProjectionLock/,
+  )
+})
 
 test('the fictional bilingual fixture passes the complete JSON Schema', () => {
   const validate = createValidator(schema)
